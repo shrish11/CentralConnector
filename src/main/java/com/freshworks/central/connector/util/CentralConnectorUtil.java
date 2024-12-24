@@ -9,12 +9,16 @@ import com.freshworks.central.common.util.JsonUtil;
 import com.freshworks.central.connector.dto.CentralConnectorConnDetails;
 import com.freshworks.central.connector.dto.CentralData;
 import com.freshworks.central.connector.request.CentralConnectorRequest;
+import com.freshworks.core.traverser.net.http.HttpRequest;
+import com.freshworks.core.traverser.net.http.HttpRequestResponse;
 import com.google.common.collect.ImmutableMap;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.hc.core5.http.ContentType;
 import org.bson.json.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.*;
 
 @Slf4j
@@ -123,6 +127,29 @@ public class CentralConnectorUtil {
             }
         }
         return jiraList;
+    }
+
+    public static @NotNull HttpRequestResponse getHttpRequestResponse(Stack<CentralData> centralStack , String centralUrl , String authHeader) {
+        HttpRequestResponse httpRequestResponse = new HttpRequestResponse();
+        if(!centralStack.isEmpty()) {
+            CentralData centralData = centralStack.pop();
+//            String centralUrl = getData("centralUrl");
+//            String authHeader = getData("authHeader");
+
+            HttpRequest httpRequest = new HttpRequest();
+            try {
+                httpRequest.initPost(centralUrl);
+                httpRequest.setHeader("service", authHeader);
+                httpRequest.setHeader("payload-version", "2.0.0");
+
+                httpRequest.setBodyAndContentType(JsonUtil.toJsonString(centralData), ContentType.APPLICATION_JSON);
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+            }
+            httpRequestResponse.setRequest(httpRequest);
+
+        }
+        return httpRequestResponse;
     }
 
 

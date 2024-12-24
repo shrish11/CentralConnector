@@ -23,6 +23,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import org.apache.hc.core5.http.ContentType;
 import org.apache.hc.core5.http.ParseException;
 import org.bson.json.JsonObject;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -79,25 +80,7 @@ public class Central extends AbstractStep {
         @Override
         public Optional startSync(JsonNode... parentJsonObject) throws StepFailedException {
             // Implement your logic here
-            HttpRequestResponse httpRequestResponse = new HttpRequestResponse();
-            if(!centralStack.isEmpty()) {
-                CentralData centralData = centralStack.pop();
-                String centralUrl = getData("centralUrl");
-                String authHeader = getData("authHeader");
-
-                HttpRequest httpRequest = new HttpRequest();
-                try {
-                    httpRequest.initPost(centralUrl);
-                    httpRequest.setHeader("service", authHeader);
-                    httpRequest.setHeader("payload-version", "2.0.0");
-
-                    httpRequest.setBodyAndContentType(JsonUtil.toJsonString(centralData), ContentType.APPLICATION_JSON);
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-                httpRequestResponse.setRequest(httpRequest);
-
-            }
+            HttpRequestResponse httpRequestResponse = CentralConnectorUtil.getHttpRequestResponse(centralStack , getData("centralUrl"), getData("authHeader"));
             return Optional.of(httpRequestResponse);
         }
 
@@ -120,29 +103,13 @@ public class Central extends AbstractStep {
         @Override
         public Optional getNextSyncRequest(HttpRequestResponse currentRequest, JsonNode... parentJsonObject) throws StepFailedException {
             // Implement your logic here if needed
-            HttpRequestResponse httpRequestResponse = new HttpRequestResponse();
-            if(!centralStack.isEmpty()) {
-                CentralData centralData = centralStack.pop();
-                String centralUrl = getData("centralUrl");
-                String authHeader = getData("authHeader");
-
-                HttpRequest httpRequest = new HttpRequest();
-                try {
-                    httpRequest.initPost(centralUrl);
-                    httpRequest.setHeader("service", authHeader);
-                    httpRequest.setHeader("payload-version", "2.0.0");
-
-                    httpRequest.setBodyAndContentType(JsonUtil.toJsonString(centralData), ContentType.APPLICATION_JSON);
-                } catch (URISyntaxException e) {
-                    throw new RuntimeException(e);
-                }
-                httpRequestResponse.setRequest(httpRequest);
-
-            }
+            HttpRequestResponse httpRequestResponse = CentralConnectorUtil.getHttpRequestResponse(centralStack , getData("centralUrl"), getData("authHeader"));
             return Optional.of(httpRequestResponse);
         }
 
-        /**
+
+
+    /**
          * @param currentRequest
          * @return
          * @throws URISyntaxException
