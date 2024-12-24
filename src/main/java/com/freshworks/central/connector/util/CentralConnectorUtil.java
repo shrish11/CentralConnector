@@ -100,7 +100,7 @@ public class CentralConnectorUtil {
 
     public static Stack<CentralData> getCentralData(Map<String, Object> inputFromOtherConnector , CentralConnectorConnDetails connectorConnDetails) throws IOException {
 
-        List<JsonObject> jiraIssues = getJiraIssues(JsonUtil.toJsonString(inputFromOtherConnector.get("jira_connector_data")));
+        List<JsonObject> jiraIssues = getJiraIssues(JsonUtil.toJsonString(inputFromOtherConnector.get("jira_connector")));
         Stack<CentralData> centralDataStack = new Stack<>();
         for (JsonObject jiraIssue : jiraIssues) {
             CentralData centralData = CentralData.builder()
