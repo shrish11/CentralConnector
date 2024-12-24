@@ -1,0 +1,1 @@
+{"input_required_from":["sharepoint_connector"],"name":"central_connector","inputTemplate":{"workflow":{"central_connector":{"central_topic":"","central_url":"","central_authentication_header":"","text":{}}}}}
